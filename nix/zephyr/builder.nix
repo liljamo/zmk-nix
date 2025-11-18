@@ -37,12 +37,14 @@
     GNUARMEMB_TOOLCHAIN_PATH = gcc-arm-embedded;
   } // (args.env or {});
 
+  preConfigure = ''
+    cp --no-preserve=mode -rt . "$westDeps"/*
+  '' + args.preConfigure;
+
   configurePhase = args.configurePhase or ''
     declare -ag westBuildFlagsArray=(${lib.escapeShellArgs finalAttrs.westBuildFlags})
 
     runHook preConfigure
-
-    cp --no-preserve=mode -rt . "$westDeps"/*
 
     mkdir -p .west
     cat >.west/config <<EOF
